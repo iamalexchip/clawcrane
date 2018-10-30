@@ -3,6 +3,7 @@
 namespace Zerochip;
 
 use Zerochip\ClawCrane\Caller;
+use Zerochip\ClawCrane\Picker;
 
 class ClawCrane
 {
@@ -17,6 +18,20 @@ class ClawCrane
     public static function call($methods, $model)
     {
         $caller = new Caller($methods, $model);
+        return $caller->parse();
+    }
+
+    /**
+     * Get the given attributes in the given object
+     *
+     * @param array $attributes
+     * @param mixed
+     *
+     * @return array
+     */
+    public static function pick($attributes, $model)
+    {
+        $caller = new Picker($attributes, $model);
         return $caller->parse();
     }
 }

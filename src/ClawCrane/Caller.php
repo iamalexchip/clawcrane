@@ -32,7 +32,7 @@ class Caller
      *
      * @var string
      */
-    public $errorMsg;
+    public $errorMessage;
 
     /**
      * Supported methods
@@ -106,20 +106,8 @@ class Caller
         $this->config = $this->model->clawCrane();
     }
 
-    public function errorMsg($message = null)
-    {
-        if (is_null($message)) {
-            $message = $this->errorMsg;
-        }
-
-        return [
-            'data' => null,
-            'error' => "{$this->modelName}: {$message}"
-        ];
-    }
-
     /**
-     * Calls methods ($this.methods) on the model ($this.model)
+     * Calls methods $this->methods) on the model $this->model
      *
      * @param array $query
      *
@@ -128,7 +116,7 @@ class Caller
     public function parse()
     {
         if (!$this->config['allow']) {
-            return $this->errorMsg('Access denied');
+            return $this->errorMessage('Access denied');
         }
 
         if (method_exists($this->model, 'scopeClawCraneVisible')) {
@@ -137,13 +125,13 @@ class Caller
 
         foreach ($this->methods as $params) {
             if ($this->hasError) {
-                return $this->errorMsg();
+                return $this->errorMessage();
             }
 
             $method = array_shift($params);
 
             if (!$this->methodIsValid($method)) {
-                return $this->errorMsg();
+                return $this->errorMessage();
             }
 
             if (in_array($method, $this->customResolvers)) {
@@ -154,10 +142,29 @@ class Caller
         }
 
         if ($this->hasError) {
-            return $this->errorMsg();
+            return $this->errorMessage();
         }
 
         return [ 'data' => $this->model ];
+    }
+
+    /**
+     * Return an error message
+     *
+     * @param string $message
+     *
+     * @return mixed
+     */
+    public function errorMessage($message = null)
+    {
+        if (is_null($message)) {
+            $message = $this->errorMessage;
+        }
+
+        return [
+            'data' => null,
+            'error' => "{$this->modelName}: {$message}"
+        ];
     }
 
     /**
@@ -178,12 +185,12 @@ class Caller
         if (array_key_exists('methods', $this->config)) {
             if (array_key_exists($method, $this->config['methods'])) {
                 if (!$this->config['methods'][$method]) {
-                    $this->errorMsg = "Unauthorised method requested [{$method}]";
+                    $this->errorMessage = "Unauthorised method requested [{$method}]";
                     return false;
                 }
             } else {
                 if (!$eloquentMethod) {
-                    $this->errorMsg = "Unknown method requested [{$method}]";
+                    $this->errorMessage = "Unknown method requested [{$method}]";
                     return false;
                 }
             }
