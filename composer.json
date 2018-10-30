@@ -14,5 +14,12 @@
         "psr-4": {
             "Zerochip\\": "src"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Zerochip\\ClawCraneServiceProvider"
+            ]
+        }
     }
 }

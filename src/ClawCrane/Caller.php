@@ -21,6 +21,13 @@ class Caller
     public $model;
 
     /**
+    * Model class name
+    *
+    * @var string
+    */
+    public $modelName;
+
+    /**
      * Check if one of the custom resolvers has error
      *
      * @var boolean
@@ -124,14 +131,10 @@ class Caller
         }
 
         foreach ($this->methods as $params) {
-            if ($this->hasError) {
-                return $this->errorMessage();
-            }
-
             $method = array_shift($params);
 
             if (!$this->methodIsValid($method)) {
-                return $this->errorMessage();
+                break;
             }
 
             if (in_array($method, $this->customResolvers)) {
@@ -141,30 +144,14 @@ class Caller
             }
         }
 
-        if ($this->hasError) {
-            return $this->errorMessage();
+        if ($this->errorMessage) {
+            return [
+                'data' => null,
+                'error' => "{$this->modelName}: {$message}"
+            ];
         }
 
         return [ 'data' => $this->model ];
-    }
-
-    /**
-     * Return an error message
-     *
-     * @param string $message
-     *
-     * @return mixed
-     */
-    public function errorMessage($message = null)
-    {
-        if (is_null($message)) {
-            $message = $this->errorMessage;
-        }
-
-        return [
-            'data' => null,
-            'error' => "{$this->modelName}: {$message}"
-        ];
     }
 
     /**
