@@ -72,14 +72,19 @@ class ClawCrane
             if (array_key_exists('error', $callerResult)) {
                 $errors[] = $callerResult['error'];
             } else {
-                $picker = new Picker($request['fetch'], $callerResult['data']);
-                $data[$key] = $picker->parse();
+                $picker = new Picker($request['pick'], $callerResult['data']);
+                $pickerResult = $picker->parse();
+                $data[$key] = $pickerResult['data'];
+
+                if (array_key_exists('errors', $pickerResult)) {
+                    $errors = array_merge($errors, $pickerResult['errors']);
+                }
             }
         }
 
         $result['data'] = $data;
 
-        if ($errors) {
+        if ($errors && config("clawcrane.debug")) {
             $result['errors'] = $errors;
         }
 
