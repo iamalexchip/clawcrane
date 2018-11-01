@@ -42,10 +42,16 @@ class ClawCrane
      *
      * @return array
      */
-    public static function fetch($requests)
+    public static function fetch($query)
     {
         $data = null;
         $errors = [];
+
+        if (is_string($query)) {
+            $requests = json_decode($query, 1);
+        } else {
+            $requests = $query;
+        }
 
         foreach ($requests as $key => $request) {
             $isValid = true;
