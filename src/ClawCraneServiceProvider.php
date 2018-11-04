@@ -16,7 +16,7 @@ class ClawCraneServiceProvider extends ServiceProvider
         // config
         $this->publishes([
             __DIR__.'/../config' => config_path(),
-        ], 'clawcrane');
+        ], 'laravel-clawcrane');
     }
 
     /**
