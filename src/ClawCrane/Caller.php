@@ -147,7 +147,7 @@ class Caller
         if ($this->errorMessage) {
             return [
                 'data' => null,
-                'error' => "{$this->modelName}: {$message}"
+                'error' => "{$this->modelName}: {$this->errorMessage}"
             ];
         }
 
