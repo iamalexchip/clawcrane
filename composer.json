@@ -1,14 +1,23 @@
 {
     "name": "zerochip/laravel-clawcrane",
-    "description": "",
     "type": "package",
+    "description": "A laravel single endpoint api package for querying eloquent models",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "api",
+        "eloquent",
+        "eloquent-models",
+        "laravel-package",
+        "data-filtering",
+        "graphql"
+    ],
     "authors": [
         {
             "name": "Alex @zerochip",
             "email": "semhiles@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {},
     "autoload": {
         "psr-4": {
