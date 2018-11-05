@@ -53,6 +53,13 @@ class ClawCrane
             $requests = $query;
         }
 
+        if (empty($requests)) {
+            return [
+                'data' => null,
+                'errors' => ['Empty request object']
+            ];
+        }
+
         foreach ($requests as $key => $request) {
             $isValid = true;
             $model = config("clawcrane.resources.{$request['resource']}");
