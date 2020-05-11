@@ -1,0 +1,29 @@
+{
+    "name": "iamalexchip/clawcrane",
+    "type": "package",
+    "description": "A laravel package for using GraphQL like filtering from eloquent models",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "api",
+        "eloquent",
+        "eloquent-models",
+        "laravel-package",
+        "data-filtering",
+        "graphql"
+    ],
+    "authors": [
+        {
+            "name": "Alex @iamalexchip",
+            "email": "iamalexchip@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Iamalexchip\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    }
+}
