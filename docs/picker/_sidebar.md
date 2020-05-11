@@ -1,8 +1,0 @@
-- [Overview](/#laravel-clawcrane)
-- **Picker**
-    - [Installation](/picker/)
-    - [Model attributes](/picker/attributes.md)
-    - [Get Method](/picker/get_method.md)
-    - [Helper](/picker/helper.md)
-    - [Api Usage](/picker/api_usage.md)
-- [Helpers](/helpers/)

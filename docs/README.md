@@ -1,10 +1,8 @@
 # Laravel ClawCrane
 
-ClawCrane is a set off laravel packages for bringing GraphQl like functionality to your Laravel APIs using your eloquent models. The packages allow you to do the following:
+Clawcrane is a laravel package for GraphQl like data fetching on your eloquent models. The packages works in the following way:
 
-- Send object templates to you api endpoints and get responses matching your templates so that you only get what you want from the server
-
-eg sending this
+- Supply an object template
 
 ```json
 {
@@ -17,7 +15,7 @@ eg sending this
     }
 }
 ```
-and getting the following response
+- Get the following output which matches you template
 
 ```json
 {

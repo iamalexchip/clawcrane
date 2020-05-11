@@ -1,3 +1,6 @@
 - [**Overview**](/#laravel-clawcrane)
-- [Picker](/picker/)
-- [Helpers](/helpers/)
+- [Model properties](/pages/properties)
+- [Model access](/pages/access)
+- [Fetching data](/pages/usage)
+- [Development](/pages/development)
+
