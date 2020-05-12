@@ -32,15 +32,15 @@ If we were to use the following template object
     "email": ""
 }
 ```
+
 the result would be the following
 
-{{todo}}[update error message]
 ```json
 {
     "data": {
         "users": [
             {
-                "username": "zerochip",
+                "username": "iamalexchip",
                 "firstname": "Alex"
             },
             {
@@ -76,7 +76,7 @@ Assuming the request was made by someone logged in as johndoe the result will no
     "data": {
         "users": [
             {
-                "username": "zerochip",
+                "username": "iamalexchip",
                 "firstname": "Alex"
             },
             {
@@ -88,8 +88,6 @@ Assuming the request was made by someone logged in as johndoe the result will no
     }
 }
 ```
-
-?> Properties can be table columns accessors or relationships defined in the model.
 
 ---
 
@@ -128,68 +126,32 @@ public function clawcraneProps()
 }
 ```
 
-So if we are to use this template
-
-```json
-{
-    "username": "",
-    "posts": "",
-}
-```
-We get
-
-```json
-{
-    "data": {
-        "users": [
-            {
-                "username": "zerochip",
-                "posts": [
-                    {
-                        "title": "How to build a rest api in laravel",
-                        "summary": "A guide on how to buid a rest api in laravel's architecture",
-                        "posted_on": "2020-05-11"
-                    },
-                    {
-                        "title": "Laravel from a to z - Controllers",
-                        "summary": "A deep dive into laravel's controllers",
-                        "posted_on": "2020-05-05"
-                    }
-                ],
-            },
-            {
-                "username": "johndoe",
-                "posts": []
-            }
-        ]
-    }
-}
-```
-
-Note how all properties in the post model are returned. We can define a nested template so we can fetch only the props that we need.
-
+So using the following nested object
 ```json
 {
     "username": "",
     "posts": {
-        "title": ""
+        "title": "",
+        "posted_on": ""
     },
 }
 ```
-The result
+We get this result
 
 ```json
 {
     "data": {
         "users": [
             {
-                "username": "zerochip",
+                "username": "iamalexchip",
                 "posts": [
                     {
-                        "title": "How to build a rest api"
+                        "title": "How to build a rest api",
+                        "posted_on": "2020-05-11"
                     },
                     {
-                        "title": "Laravel from a to z - Controllers"
+                        "title": "Laravel from a to z - Controllers",
+                        "posted_on": "2020-05-05"
                     }
                 ],
             },

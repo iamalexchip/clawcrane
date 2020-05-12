@@ -1,6 +1,5 @@
 - [**Overview**](/#laravel-clawcrane)
+- [Installation](/pages/installation)
 - [Model properties](/pages/properties)
-- [Model access](/pages/access)
-- [Fetching data](/pages/usage)
+- [Fetching data](/pages/fetching_data)
 - [Development](/pages/development)
-

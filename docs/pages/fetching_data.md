@@ -1,4 +1,4 @@
-# Usage
+# Fetching data
 ----
 
 ## Example
