@@ -26,9 +26,6 @@ $clawcrane->get($template);
                 "email" => "johndoe24@mail.com"
             ]
         ]
-    ],
-    "errors" => [
-        "App\\User: attribute [email] access denied"
     ]
 ]
 */
