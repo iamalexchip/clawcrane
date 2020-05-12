@@ -31,7 +31,7 @@ class Clawcrane
 
     private function grab($template, $data)
     {
-        if (!$this->iterable($data)) {
+        if (!$this->isIterable($data)) {
             if (!$this->canView($data)) return (object) [];
             return $this->pick($template, $data);
         }
@@ -55,13 +55,21 @@ class Clawcrane
             if (!array_key_exists($key, $props)) continue;
             $prop = $props[$key];
             
-            // middlware check
+            // check if can be accessed
             if (array_key_exists('check', $prop) &&!$prop['check']) continue;
             
+            $value = $prop['value'];
+
             if (is_object($keys->{$key})) {
-                $result[$key] = $this->grab($keys->{$key}, $prop['value']);
+                $result[$key] = $this->grab($keys->{$key}, $value);
             } else {
-                $result[$key] = $prop['value'];
+                if (is_object($value)) {
+                    if ($this->isModel($value) || $this->isIterable($value)) {
+                        continue;
+                    }
+                }
+
+                $result[$key] = $value;
             }
         }
 
@@ -75,7 +83,7 @@ class Clawcrane
      *
      * @return boolean
      */
-    public static function iterable($value)
+    public static function isIterable($value)
     {
         if (is_array($value)) return true;
 
@@ -84,6 +92,11 @@ class Clawcrane
             'Illuminate\Pagination\LengthAwarePaginator',
             'Illuminate\Pagination\Paginator'
         ]);
+    }
+
+    public static function isModel($value)
+    {
+        return $value instanceof \Illuminate\Database\Eloquent\Model;
     }
 
     public function canView($item)
