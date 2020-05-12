@@ -20,6 +20,14 @@ class Clawcrane
 
     public function get($template)
     {
+        if (is_array($template)) {
+            $template = json_decode(json_encode($template));
+        }
+
+        if (is_string($template)) {
+            $template = json_decode($template);
+        }
+
         if (is_object($this->haystack) || is_array($this->haystack)) {
             $this->data = $this->grab($template, $this->haystack);
         } else {
@@ -31,15 +39,13 @@ class Clawcrane
 
     private function grab($template, $data)
     {
-        if (!$this->isIterable($data)) {
-            if (!$this->canView($data)) return (object) [];
+        if (!is_iterable($data)) {
             return $this->pick($template, $data);
         }
 
         $result = [];
 
         foreach ($data as $item) {
-            if (!$this->canView($item)) continue;
             $result[] = $this->pick($template, $item);
         }
 
@@ -62,56 +68,28 @@ class Clawcrane
 
             if (is_object($keys->{$key})) {
                 $result[$key] = $this->grab($keys->{$key}, $value);
-            } else {
-                if (is_object($value)) {
-                    if ($this->isModel($value) || $this->isIterable($value)) {
-                        continue;
-                    }
-                }
-
-                $result[$key] = $value;
+                continue;
             }
+            
+            if (is_object($value)) {
+                if ($this->isModel($value) || $this->isIterable($value)) continue;
+            }
+
+            $result[$key] = $value;
         }
 
         return (object) $result;
     }
 
     /**
-     * Checks if a object can be iterated
+     * Checks if an object is a model
      *
-     * @param mixed
+     * @param object
      *
      * @return boolean
      */
-    public static function isIterable($value)
-    {
-        if (is_array($value)) return true;
-
-        return in_array(get_class($value), [
-            'Illuminate\Database\Eloquent\Collection',
-            'Illuminate\Pagination\LengthAwarePaginator',
-            'Illuminate\Pagination\Paginator'
-        ]);
-    }
-
     public static function isModel($value)
     {
         return $value instanceof \Illuminate\Database\Eloquent\Model;
-    }
-
-    public function canView($item)
-    {
-        if (method_exists($item, 'clawcraneAccess')) {
-            $access = $item->clawcraneAccess();
-
-            if (!$access['check']) {
-                $this->pushError($access['message']);
-                return false;
-            }
-
-            return true;
-        }
-
-        return true;
     }
 }
