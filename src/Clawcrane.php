@@ -4,8 +4,18 @@ namespace Iamalexchip;
 
 class Clawcrane
 {
+    /**
+     * Object or array to be fetched from.
+     *
+     * @var mixed
+     */
     private $haystack = null;
-    public $data = null;
+
+    /**
+     * Property fetching errors.
+     *
+     * @var array
+     */
     public $errors = [];
     
     /**
@@ -18,8 +28,18 @@ class Clawcrane
         $this->haystack = $haystack;
     }
 
+    /**
+     * Get the given properties from the haystack
+     *
+     * @param mixed $template
+     *
+     * @return array
+     */
     public function get($template)
     {
+        $data = null;
+        $this->errors = [];
+
         if (is_array($template)) {
             $template = json_decode(json_encode($template));
         }
@@ -29,14 +49,25 @@ class Clawcrane
         }
 
         if (is_object($this->haystack) || is_array($this->haystack)) {
-            $this->data = $this->grab($template, $this->haystack);
+            $data = $this->grab($template, $this->haystack);
         } else {
             $this->errors[] = 'Haystack must be object or array';
         }
 
-        return $this;
+        return [
+            'data' => $data,
+            'errors' => $this->errors
+        ];
     }
 
+    /**
+     * Get the given properties from an object or iterable value
+     *
+     * @param object $template
+     * @param object $target
+     *
+     * @return array
+     */
     private function grab($template, $data)
     {
         if (!is_iterable($data)) {
@@ -52,6 +83,17 @@ class Clawcrane
         return $result;
     }
 
+    /**
+     * Get the given properties from target
+     *
+     * @param object $keys properties to fetch
+     * @param object $target  
+     *
+     * The $target can be a \Illuminate\Database\Eloquent\Model or any object with
+     * a clawcraneProps() method.
+     *
+     * @return array
+     */
     private function pick($keys, $target)
     {
         $props = $target->clawcraneProps(); 
@@ -78,7 +120,7 @@ class Clawcrane
             $result[$key] = $value;
         }
 
-        return (object) $result;
+        return $result;
     }
 
     /**
@@ -91,5 +133,25 @@ class Clawcrane
     public static function isModel($value)
     {
         return $value instanceof \Illuminate\Database\Eloquent\Model;
+    }
+
+    /**
+     * Checks if a object can be iterated
+     * Checks if an object is a model
+     *
+     * @param mixed
+     * @param object
+     *
+     * @return boolean
+     */
+    public static function isIterable($value)
+    {
+        if (is_array($value)) return true;
+
+        return in_array(get_class($value), [
+            'Illuminate\Database\Eloquent\Collection',
+            'Illuminate\Pagination\LengthAwarePaginator',
+            'Illuminate\Pagination\Paginator'
+        ]);
     }
 }
