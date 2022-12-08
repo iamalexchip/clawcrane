@@ -40,6 +40,18 @@ class Clawcrane
      *
      * @param mixed $template
      *
+     * @return \Iamalexchip\Clawcrane
+     */
+    public static function from($haystack)
+    {
+        return new Clawcrane($haystack);
+    }
+
+    /**
+     * Get the given properties from the haystack
+     *
+     * @param mixed $template
+     *
      * @return array
      */
     public function get($template)
