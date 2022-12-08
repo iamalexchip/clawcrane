@@ -2,6 +2,8 @@
 
 namespace Iamalexchip;
 
+use stdClass;
+
 class Clawcrane
 {
     /**
@@ -17,7 +19,9 @@ class Clawcrane
      * @var array
      */
     public $errors = [];
-    
+
+    public $keyPath;
+
     /**
      * Create a new controller instance.
      *
@@ -25,6 +29,9 @@ class Clawcrane
      */
     public function __construct($haystack = null)
     {
+        if (!is_object($haystack) || !is_array($haystack)) {
+            $this->errors[] = 'Haystack must be object or array';
+        }
         $this->haystack = $haystack;
     }
 
@@ -37,7 +44,6 @@ class Clawcrane
      */
     public function get($template)
     {
-        $data = null;
         $this->errors = [];
 
         if (is_array($template)) {
@@ -48,11 +54,7 @@ class Clawcrane
             $template = json_decode($template);
         }
 
-        if (is_object($this->haystack) || is_array($this->haystack)) {
-            $data = $this->grab($template, $this->haystack);
-        } else {
-            $this->errors[] = 'Haystack must be object or array';
-        }
+        $data = $this->grab($template, $this->haystack);
 
         return [
             'data' => $data,
@@ -68,8 +70,10 @@ class Clawcrane
      *
      * @return array
      */
-    private function grab($template, $data)
+    private function grab($template, $data, $keyPath = "")
     {
+        $this->keyPath = $keyPath;
+
         if (!is_iterable($data)) {
             return $this->pick($template, $data);
         }
@@ -77,6 +81,7 @@ class Clawcrane
         $result = [];
 
         foreach ($data as $item) {
+            $this->keyPath = $keyPath;
             $result[] = $this->pick($template, $item);
         }
 
@@ -96,62 +101,35 @@ class Clawcrane
      */
     private function pick($keys, $target)
     {
-        $props = $target->clawcraneProps(); 
-        $result = [];
+        $props = $target->clawcraneProps();
+        $result = new stdClass;
 
-        foreach ($keys as $key => $value) {
+        foreach ($keys as $key => $keyValue) {
             if (!array_key_exists($key, $props)) continue;
             $prop = $props[$key];
-            
-            // check if can be accessed
-            if (array_key_exists('check', $prop) &&!$prop['check']) continue;
-            
+            $path = $this->keyPath ? $this->keyPath . '.' . $key : $key;
             $value = $prop['value'];
 
-            if (is_object($keys->{$key})) {
-                $result[$key] = $this->grab($keys->{$key}, $value);
+            // check if can be accessed
+            if (array_key_exists('check', $prop) && !$prop['check']) {
+                $this->errors[] = '[' . $path . ']: access denied';
                 continue;
             }
-            
-            if (is_object($value)) {
-                if ($this->isModel($value) || $this->isIterable($value)) continue;
+
+            // if key has sub props
+            if (is_object($keyValue)) {
+                $result->{$key} = $this->grab($keyValue, $value, $path);
+                continue;
             }
 
-            $result[$key] = $value;
+            if (is_object($value)) {
+                $this->errors[] = '[' . $path . ']: value is object or array so it cannot be returned';
+                continue;
+            }
+
+            $result->{$key} = $value;
         }
 
         return $result;
-    }
-
-    /**
-     * Checks if an object is a model
-     *
-     * @param object
-     *
-     * @return boolean
-     */
-    public static function isModel($value)
-    {
-        return $value instanceof \Illuminate\Database\Eloquent\Model;
-    }
-
-    /**
-     * Checks if a object can be iterated
-     * Checks if an object is a model
-     *
-     * @param mixed
-     * @param object
-     *
-     * @return boolean
-     */
-    public static function isIterable($value)
-    {
-        if (is_array($value)) return true;
-
-        return in_array(get_class($value), [
-            'Illuminate\Database\Eloquent\Collection',
-            'Illuminate\Pagination\LengthAwarePaginator',
-            'Illuminate\Pagination\Paginator'
-        ]);
     }
 }
